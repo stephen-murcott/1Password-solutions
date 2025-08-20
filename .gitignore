@@ -180,3 +180,5 @@ c-scripts/abk/others.txt
 .task/
 
 .venv
+.vs/ProjectSettings.json
+/.vs

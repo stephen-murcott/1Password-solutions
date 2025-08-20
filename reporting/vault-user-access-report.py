@@ -58,16 +58,18 @@ def getSpecifiedVaults():
             )
     return vaultList
 
-
 # get a list of users and their permissions for a vault
 def getVaultUserList(vaultID):
-    vaultUserList = subprocess.run(
-        ["op", "vault", "user", "list", vaultID, "--format=json"],
-        check=True,
-        capture_output=True,
-    ).stdout
-    return vaultUserList
-
+    try:
+        vaultUserList = subprocess.run(
+            ["op", "vault", "user", "list", vaultID, "--format=json"],
+            check=True,
+            capture_output=True,
+        ).stdout
+        return vaultUserList
+    except subprocess.CalledProcessError as e:
+        print(f"ERROR: Could not retrieve members for group {vaultID}. Error: {e.stderr.decode().strip()}", file=sys.stderr)
+        return []
 
 # get all groups in the account
 def getVaultGroupList(vaultID):
@@ -77,7 +79,6 @@ def getVaultGroupList(vaultID):
         capture_output=True,
     ).stdout
     return vaultGroupList
-
 
 # Given a list of vaults, for each vault, list the users that have access along with their permissions.
 # Write the results to a csv file with columns: "vaultName", "vaultUUID", "name","email", "userUUID", "permissions"
